@@ -17,5 +17,13 @@ pipeline {
         sh 'node --version'
       }
     }
+    stage('db') {
+      agent {
+        docker { image 'alpine:3.20.3' }
+      }
+      steps {
+        sh 'ls -l'
+      }
+    }
   }
 }
