@@ -248,15 +248,16 @@ Directives in Pipeline
 11. when - The when directive allows the Pipeline to determine whether the stage should be executed depending on the given condition.
 		  Conditional structures can be built using the nesting conditions: not, allOf, or anyOf.
 
- Built-in Conditions : 
-	1. branch - Execute the stage when the branch being built matches the branch pattern
-		- EQUALS for a simple string comparison
+    Built-in Conditions : 
+    1. branch - Execute the stage when the branch being built matches the branch pattern
+	- EQUALS for a simple string comparison
 			Example: when { branch 'master' }
 			
-		- GLOB (the default) for an ANT style path glob (same as for example changeset), for an ANT style path glob case insensitive (caseSensitive parameter)
-		-  for regular expression matching
+	- GLOB (the default) for an ANT style path glob (same as for example changeset), for an ANT style path glob case insensitive (caseSensitive parameter)
+	- For regular expression matching
+
 			when { branch pattern: "release-\\d+", comparator: "REGEXP"}
-		
+
 			pipeline {
 				agent any
 				stages {
@@ -281,64 +282,93 @@ Directives in Pipeline
 				}
 			}
 			
-	2. buildingTag - Execute the stage when the build is building a tag
-		Example: when { buildingTag() }
+    2. buildingTag - Execute the stage when the build is building a tag.
+       Example:
+
+	when { buildingTag() }
 		
-	3. changelog - Execute the stage if the build’s SCM changelog contains a given regular expression pattern
-		Example: when { changelog '.*^\\[DEPENDENCY\\] .+$' }
+    3. changelog - Execute the stage if the build’s SCM changelog contains a given regular expression pattern
+       Example:
+
+	when { changelog '.*^\\[DEPENDENCY\\] .+$' }
 	
-	4. changeset - Execute the stage if the build’s SCM changeset contains one or more files matching the given pattern.
-		Example: EQUALS - when { changeset "**/*.js" }
-				 REGEXP - when { changeset pattern: ".TEST\\.java", comparator: "REGEXP" }
-				 GLOB - when { changeset pattern: "*/*TEST.java", caseSensitive: true }
+    4. changeset - Execute the stage if the build’s SCM changeset contains one or more files matching the given pattern.
+       Example:
+       EQUALS -
 
-	5. changeRequest - Executes the stage if the current build is for a "change request" (Pull Request), When no parameters are passed the stage runs on every change request.
-		Possible attributes are id, target, branch, fork, url, title, author, authorDisplayName, and authorEmail
-		
-		Example: when { changeRequest() }
-				 when { changeRequest target: 'master' }.
-		
-		- EQUALS for a simple string comparison (the default)
-		- GLOB for an ANT style path glob (same as for example changeset)
-		- REGEXP for regular expression matching
-		Example: when { changeRequest authorEmail: "[\\w_-.]+@example.com", comparator: 'REGEXP' }
+	when { changeset "**/*.js" }
 
-	6. environment - Execute the stage when the specified environment variable is set to the given value
+       REGEXP -
+
+    	when { changeset pattern: ".TEST\\.java", comparator: "REGEXP" }
+
+       GLOB -
+
+    	when { changeset pattern: "*/*TEST.java", caseSensitive: true }
+
+    5. changeRequest - Executes the stage if the current build is for a "change request" (Pull Request), When no parameters are passed the stage runs on every change request.
+	Possible attributes are id, target, branch, fork, url, title, author, authorDisplayName, and authorEmail
+		
+	Example:
+
+	when { changeRequest() }
+	when { changeRequest target: 'master' }.
+		
+	- EQUALS for a simple string comparison (the default)
+	- GLOB for an ANT style path glob (same as for example changeset)
+	- REGEXP for regular expression matching
+	  Example:
+
+   	when { changeRequest authorEmail: "[\\w_-.]+@example.com", comparator: 'REGEXP' }
+
+    6. environment - Execute the stage when the specified environment variable is set to the given value
 		Example: when { environment name: 'DEPLOY_TO', value: 'production' }.
 	
-	7. equals - Execute the stage when the expected value is equal to the actual value 
+    7. equals - Execute the stage when the expected value is equal to the actual value 
 		Example: when { equals expected: 2, actual: currentBuild.number }
 		
-	8. expression - Execute the stage when the specified Groovy expression evaluates to true
-		Example: when { expression { return params.DEBUG_BUILD } }
-		
-		stage {
-			when {
-				expression { BRANCH_NAME ==~ /(production|staging)/ }
-				anyOf {
-					environment name: 'DEPLOY_TO', value: 'production'
-					environment name: 'DEPLOY_TO', value: 'staging'
-				}
-			}
-		}
+    8. expression - Execute the stage when the specified Groovy expression evaluates to true
+       Example:
 
-	9. tag : Execute the stage if the TAG_NAME variable matches the given pattern. If an empty pattern is provided the stage will execute if the TAG_NAME variable exists (same as buildingTag()).
-		Example: when { tag "release-*" }
-		
-	10. not - Execute the stage when the nested condition is false. Must contain one condition. 
-		Example: when { not { branch 'master' } }
-		
-	11. allOf - Execute the stage when all of the nested conditions are true
-		Example: when { allOf { branch 'master'; environment name: 'DEPLOY_TO', value: 'production' } }
+	when { expression { return params.DEBUG_BUILD } }
 
-	12. anyOf - Execute the stage when at least one of the nested conditions is true. Must contain at least one condition.
-		Example: when { anyOf { branch 'master'; branch 'staging' } }
+	stage {
+	      when {
+	          expression { BRANCH_NAME ==~ /(production|staging)/ }
+	          anyOf {
+		  environment name: 'DEPLOY_TO', value: 'production'
+	          environment name: 'DEPLOY_TO', value: 'staging'
+		  }
+	   }
+	}
+
+    10. tag : Execute the stage if the TAG_NAME variable matches the given pattern. If an empty pattern is provided the stage will execute if the TAG_NAME variable exists (same as buildingTag()).
+	Example:
+
+	when { tag "release-*" }
 		
-	13. triggeredBy - Execute the stage when the current build has been triggered by the param given
-		Example: when { triggeredBy 'SCMTrigger' }
-				 when { triggeredBy 'TimerTrigger' }
-				 when { triggeredBy 'BuildUpstreamCause' }
-				 when { triggeredBy cause: "UserIdCause", detail: "vlinde" }
+    11. not - Execute the stage when the nested condition is false. Must contain one condition. 
+	Example:
+
+ 	when { not { branch 'master' } }
+		
+    12. allOf - Execute the stage when all of the nested conditions are true
+	Example:
+
+	when { allOf { branch 'master'; environment name: 'DEPLOY_TO', value: 'production' } }
+
+    13. anyOf - Execute the stage when at least one of the nested conditions is true. Must contain at least one condition.
+	Example:
+
+	when { anyOf { branch 'master'; branch 'staging' } }
+		
+    14. triggeredBy - Execute the stage when the current build has been triggered by the param given
+	Example:
+
+	when { triggeredBy 'SCMTrigger' }
+	when { triggeredBy 'TimerTrigger' }
+	when { triggeredBy 'BuildUpstreamCause' }
+	when { triggeredBy cause: "UserIdCause", detail: "vlinde" }
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
