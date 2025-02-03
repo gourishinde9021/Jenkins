@@ -1,18 +1,18 @@
 ## Jenkins
-eclarative Pipeline:
+Declarative Pipeline:
 Enclosed in :
-  	pipeline {
-  	}
 
-The top-level of the Pipeline must be a block, specifically: pipeline { }.
+	  	pipeline {}
 
-No semicolons as statement separators. Each statement has to be on its own line.
+- The top-level of the Pipeline must be a block, specifically: pipeline { }.
 
-Blocks must only consist of Sections, Directives, Steps, or assignment statements.
+- No semicolons as statement separators. Each statement has to be on its own line.
 
-A property reference statement is treated as a no-argument method invocation. So, for example, input is treated as input().
+- Blocks must only consist of Sections, Directives, Steps, or assignment statements.
 
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+- A property reference statement is treated as a no-argument method invocation. So, for example, input is treated as input().
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 **Sections in pipeline:**
 
@@ -21,25 +21,26 @@ A property reference statement is treated as a no-argument method invocation. So
      1. Top Level Agents - declared at the top level of a Pipeline, an agent is allocated and then the timeout option is applied
      2. Stage Agents - declared within a stage, the options are invoked before allocating the agent and before checking any when conditions.
 
-  pipeline {
-  	agent any -----> OR(none)  // Top Level Agents
-  	options {
-  		timeout(time: 1, unit: 'SECONDS')   // Timeout counter starts AFTER agent is allocated
-  	}
-  	stages {
-  		stage('Example') {
-  			agent any                		       // Stage Agents							
-  			options {
-                  timeout(time: 1, unit: 'SECONDS')  // Timeout counter starts BEFORE agent is allocated, This timeout will include the agent provisioning time
-              }
-  			steps {
-  				echo 'Hello World'
-  			}
-  		}
-  	}
-  }
+	pipeline {
+		agent any -----> OR(none)  // Top Level Agents
+		options {
+			timeout(time: 1, unit: 'SECONDS')   // Timeout counter starts AFTER agent is allocated
+		}
+		stages {
+			stage('Example') {
+				agent any                		       // Stage Agents							
+				options {
+	                timeout(time: 1, unit: 'SECONDS')  // Timeout counter starts BEFORE agent is allocated, This timeout will include the agent provisioning time
+	            }
+				steps {
+					echo 'Hello World'
+				}
+			}
+		}
+	}
 
-**agent** - different types of parameters
+**agent** - 
+Different types of parameters
 1. any - Execute the Pipeline, or stage, on any available agent. Ex: agent any
 2. none - no global agent will be allocated for the entire Pipeline run and each stage section will need to contain its own agent section. Ex. agent none
 3. label - an agent available in the Jenkins environment with the provided label. Ex. agent { label 'my-defined-label' }
