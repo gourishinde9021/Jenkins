@@ -58,19 +58,20 @@ Ex.
   }
 
 6. dockerfile - Execute the Pipeline, or stage, with a container built from a Dockerfile contained in the source repository. Ex : agent { dockerfile true }
-  agent {
-  			// Equivalent to "docker build -f Dockerfile.build --build-arg version=1.0.2 ./build/
-  			dockerfile {
-  				filename 'Dockerfile.build'
-  				dir 'build'
-  				label 'my-defined-label'
-  				additionalBuildArgs  '--build-arg version=1.0.2'
-  				args '-v /tmp:/tmp'
-  				registryUrl 'https://myregistry.com/'
-  				registryCredentialsId 'myPredefinedCredentialsInJenkins'
-  			}
 
-7. Kubernetes - Execute the Pipeline, or stage, inside a pod deployed on a Kubernetes cluster. The Pod template is defined inside the kubernetes { } block.
+	  agent {
+	  			// Equivalent to "docker build -f Dockerfile.build --build-arg version=1.0.2 ./build/
+	  			dockerfile {
+	  				filename 'Dockerfile.build'
+	  				dir 'build'
+	  				label 'my-defined-label'
+	  				additionalBuildArgs  '--build-arg version=1.0.2'
+	  				args '-v /tmp:/tmp'
+	  				registryUrl 'https://myregistry.com/'
+	  				registryCredentialsId 'myPredefinedCredentialsInJenkins'
+	  	}
+
+8. Kubernetes - Execute the Pipeline, or stage, inside a pod deployed on a Kubernetes cluster. The Pod template is defined inside the kubernetes { } block.
    
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -100,6 +101,7 @@ pipeline {
 3. stages - Mandatory
 
 Containing a sequence of one or more stage directives.
+
 pipeline {
 	agent any
 	stages {                     //	The stages section will typically follow the directives such as agent, options etc.
@@ -114,6 +116,7 @@ pipeline {
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 4. steps - Mandatory   ( Allowed - Inside each stage block )
+
 	stages {
 		stage('Example') {
 			steps {                   // The steps section must contain one or more steps.
@@ -129,7 +132,8 @@ Directives in Pipeline
 ----------------------
 
 1. environment - 
-			specifies a sequence of key-value pairs which will be defined as environment variables for all steps, supports a special helper method credentials() 
+			specifies a sequence of key-value pairs which will be defined as environment variables for all steps, supports a special helper method credentials().
+   
 	pipeline {
 		agent any
 		environment {
@@ -160,11 +164,13 @@ Directives in Pipeline
 	}
 	
 	
-2. options - Pipeline provides a number of these options, such as buildDiscarder, but they may also be provided by plugins, such as timestamps.
-		options {
-			timeout(time: 1, unit: 'HOURS') 
+3. options - Pipeline provides a number of these options, such as buildDiscarder, but they may also be provided by plugins, such as timestamps.
 
-3. parameters - provides a list of parameters that a user should provide when triggering the Pipeline
+  options {
+			timeout(time: 1, unit: 'HOURS') 
+   }
+   
+4. parameters - provides a list of parameters that a user should provide when triggering the Pipeline
 	
 	parameters {
         string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
@@ -183,17 +189,20 @@ Directives in Pipeline
 		}
 	}
 
-4. triggers - automated ways in which the Pipeline should be re-triggered. cron, pollSCM and upstream
-		Example: triggers { cron('H */4 * * 1-5') }
+5. triggers - automated ways in which the Pipeline should be re-triggered. cron, pollSCM and upstream
+		Example:
+
+		triggers { cron('H */4 * * 1-5') }
 		triggers { pollSCM('H */4 * * 1-5') }
 		triggers { upstream(upstreamProjects: 'job1,job2', threshold: hudson.model.Result.SUCCESS) }
 
-5. jenkins cron syntax - Minutes, hours, Day Of month, Month, Day of Week
-	triggers{ cron('H/15 * * * *') }
+7. jenkins cron syntax - Minutes, hours, Day Of month, Month, Day of Week
 
-6. stage - The stage directive goes in the stages section and should contain a steps section, an optional agent section, or other stage-specific directives.
+ 	triggers{ cron('H/15 * * * *') }
 
-7. tools - A section defining tools to auto-install and put on the PATH. This is ignored if agent none is specified.
+8. stage - The stage directive goes in the stages section and should contain a steps section, an optional agent section, or other stage-specific directives.
+
+9. tools - A section defining tools to auto-install and put on the PATH. This is ignored if agent none is specified.
 	Supported Tools
 		maven
 		jdk
@@ -215,29 +224,31 @@ Directives in Pipeline
 			}
 		}
 	
-8. input - The input directive on a stage allows you to prompt for input, using the input step. 
-	pipeline {
-		agent any
-		stages {
-			stage('Example') {
-				input {
-					message "Should we continue?"
-					ok "Yes, we should"
-					submitter "alice,bob"
-					parameters {
-						string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+10. input - The input directive on a stage allows you to prompt for input, using the input step. 
+
+	 pipeline {
+			agent any
+			stages {
+				stage('Example') {
+					input {
+						message "Should we continue?"
+						ok "Yes, we should"
+						submitter "alice,bob"
+						parameters {
+							string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+						}
 					}
-				}
-				steps {
-					echo "Hello ${PERSON}, nice to meet you."
+					steps {
+						echo "Hello ${PERSON}, nice to meet you."
+					}
 				}
 			}
 		}
-	}
 	
-9. when - The when directive allows the Pipeline to determine whether the stage should be executed depending on the given condition.
+11. when - The when directive allows the Pipeline to determine whether the stage should be executed depending on the given condition.
 		  Conditional structures can be built using the nesting conditions: not, allOf, or anyOf.
-	Built-in Conditions : 
+
+ Built-in Conditions : 
 	1. branch - Execute the stage when the branch being built matches the branch pattern
 		- EQUALS for a simple string comparison
 			Example: when { branch 'master' }
@@ -246,29 +257,29 @@ Directives in Pipeline
 		-  for regular expression matching
 			when { branch pattern: "release-\\d+", comparator: "REGEXP"}
 		
-		pipeline {
-			agent any
-			stages {
-				stage('Example Build') {
-					steps {
-						echo 'Hello World'
-					}
-				}
-				stage('Example deploy') {
-					when {
-						branch 'production'
-						environment name: 'DEPLOY_TO', value: 'production'  // nested condition
-						anyOf {                // multiple nested condition
-							environment name: 'DEPLOY_TO', value: 'production'
-							environment name: 'DEPLOY_TO', value: 'staging'
+			pipeline {
+				agent any
+				stages {
+					stage('Example Build') {
+						steps {
+							echo 'Hello World'
 						}
 					}
-					steps {
-						echo 'Deploying'
+					stage('Example deploy') {
+						when {
+							branch 'production'
+							environment name: 'DEPLOY_TO', value: 'production'  // nested condition
+							anyOf {                // multiple nested condition
+								environment name: 'DEPLOY_TO', value: 'production'
+								environment name: 'DEPLOY_TO', value: 'staging'
+							}
+						}
+						steps {
+							echo 'Deploying'
+						}
 					}
 				}
 			}
-		}
 			
 	2. buildingTag - Execute the stage when the build is building a tag
 		Example: when { buildingTag() }
