@@ -82,6 +82,7 @@ Ex.
 The post section defines one or more additional steps that are run upon the completion of a Pipeline’s or stage’s run (depending on the location of the post section within the Pipeline).
 post can support any of the following post-condition blocks: always, changed, fixed, regression, aborted, failure, success, unstable, unsuccessful, and cleanup.
 These condition blocks allow the execution of steps inside each condition depending on the completion status of the Pipeline or stage.
+
 ```
 pipeline {
 	agent any
@@ -104,6 +105,7 @@ pipeline {
 3. stages - Mandatory
 
 Containing a sequence of one or more stage directives.
+
 ```
 pipeline {
 	agent any
@@ -119,6 +121,7 @@ pipeline {
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 4. steps - Mandatory   ( Allowed - Inside each stage block )
+
 ```
 	stages {
 		stage('Example') {
@@ -262,8 +265,8 @@ Directives in Pipeline
 11. when - The when directive allows the Pipeline to determine whether the stage should be executed depending on the given condition.
 		  Conditional structures can be built using the nesting conditions: not, allOf, or anyOf.
 
-    Built-in Conditions : 
-    1. branch - Execute the stage when the branch being built matches the branch pattern
+Built-in Conditions : 
+1. branch - Execute the stage when the branch being built matches the branch pattern
 	- EQUALS for a simple string comparison
 			Example: when { branch 'master' }
 			
