@@ -21,23 +21,23 @@ Enclosed in :
      1. Top Level Agents - declared at the top level of a Pipeline, an agent is allocated and then the timeout option is applied
      2. Stage Agents - declared within a stage, the options are invoked before allocating the agent and before checking any when conditions.
 
-	pipeline {
-		agent any -----> OR(none)  // Top Level Agents
-		options {
-			timeout(time: 1, unit: 'SECONDS')   // Timeout counter starts AFTER agent is allocated
-		}
-		stages {
-			stage('Example') {
-				agent any                		       // Stage Agents							
-				options {
-	                timeout(time: 1, unit: 'SECONDS')  // Timeout counter starts BEFORE agent is allocated, This timeout will include the agent provisioning time
-	            }
-				steps {
-					echo 'Hello World'
+		pipeline {
+			agent any -----> OR(none)  // Top Level Agents
+			options {
+				timeout(time: 1, unit: 'SECONDS')   // Timeout counter starts AFTER agent is allocated
+			}
+			stages {
+				stage('Example') {
+					agent any                		       // Stage Agents							
+					options {
+						timeout(time: 1, unit: 'SECONDS')  // Timeout counter starts BEFORE agent is allocated, This timeout will include the agent provisioning time
+					}
+					steps {
+						echo 'Hello World'
+					}
 				}
 			}
 		}
-	}
 
 **agent** - 
 Different types of parameters
