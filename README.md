@@ -298,21 +298,21 @@ Directives in Pipeline
 			}
 ```
 		
-    2. buildingTag - Execute the stage when the build is building a tag.
+2. buildingTag - Execute the stage when the build is building a tag.
        Example:
 
 ```
 	when { buildingTag() }
 ```
 		
-    3. changelog - Execute the stage if the build’s SCM changelog contains a given regular expression pattern
+3. changelog - Execute the stage if the build’s SCM changelog contains a given regular expression pattern
        Example:
        
 ```
 	when { changelog '.*^\\[DEPENDENCY\\] .+$' }
 ```
 
-    4. changeset - Execute the stage if the build’s SCM changeset contains one or more files matching the given pattern.
+4. changeset - Execute the stage if the build’s SCM changeset contains one or more files matching the given pattern.
        Example:
        EQUALS -
        
@@ -332,7 +332,7 @@ Directives in Pipeline
     	when { changeset pattern: "*/*TEST.java", caseSensitive: true }
 ```
 
-    5. changeRequest - Executes the stage if the current build is for a "change request" (Pull Request), When no parameters are passed the stage runs on every change request.
+5. changeRequest - Executes the stage if the current build is for a "change request" (Pull Request), When no parameters are passed the stage runs on every change request.
 	Possible attributes are id, target, branch, fork, url, title, author, authorDisplayName, and authorEmail
 		
 	Example:
@@ -351,13 +351,13 @@ Directives in Pipeline
    	when { changeRequest authorEmail: "[\\w_-.]+@example.com", comparator: 'REGEXP' }
 ```
 
-    6. environment - Execute the stage when the specified environment variable is set to the given value
+6. environment - Execute the stage when the specified environment variable is set to the given value
 	Example: when { environment name: 'DEPLOY_TO', value: 'production' }.
 	
-    7. equals - Execute the stage when the expected value is equal to the actual value 
+7. equals - Execute the stage when the expected value is equal to the actual value 
 	Example: when { equals expected: 2, actual: currentBuild.number }
 		
-    8. expression - Execute the stage when the specified Groovy expression evaluates to true
+8. expression - Execute the stage when the specified Groovy expression evaluates to true
        Example:
        
 ```
@@ -374,35 +374,35 @@ Directives in Pipeline
 	}
 ```
 
-    10. tag : Execute the stage if the TAG_NAME variable matches the given pattern. If an empty pattern is provided the stage will execute if the TAG_NAME variable exists (same as buildingTag()).
+10. tag : Execute the stage if the TAG_NAME variable matches the given pattern. If an empty pattern is provided the stage will execute if the TAG_NAME variable exists (same as buildingTag()).
 	Example:
  
 ```
 	when { tag "release-*" }
 ```
 	
-    11. not - Execute the stage when the nested condition is false. Must contain one condition. 
+11. not - Execute the stage when the nested condition is false. Must contain one condition. 
 	Example:
  
 ```
  	when { not { branch 'master' } }
 ```
 	
-    12. allOf - Execute the stage when all of the nested conditions are true
+12. allOf - Execute the stage when all of the nested conditions are true
 	Example:
  
 ```
 	when { allOf { branch 'master'; environment name: 'DEPLOY_TO', value: 'production' } }
 ```
 
-    13. anyOf - Execute the stage when at least one of the nested conditions is true. Must contain at least one condition.
+13. anyOf - Execute the stage when at least one of the nested conditions is true. Must contain at least one condition.
 	Example:
  
 ```
 	when { anyOf { branch 'master'; branch 'staging' } }
 ```
 		
-    14. triggeredBy - Execute the stage when the current build has been triggered by the param given
+14. triggeredBy - Execute the stage when the current build has been triggered by the param given
 	Example:
  
 ```
